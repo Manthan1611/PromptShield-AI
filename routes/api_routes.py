@@ -187,10 +187,14 @@ def _local_safety_fallback(prompt: str):
 
 
 def _gemini_primary_detect(text, normalization, external_content=None):
-    """Run Gemini as the sole semantic detector; apply a narrow fail-safe only
-    when Gemini is unavailable or misses a high-confidence known pattern.
+    """Run Gemini when available and always retain local rule-based detection.
+
+    The local rule detector is independent of Gemini quota and is the minimum
+    detection layer. Gemini failures must never turn a matched injection rule
+    into an automatic allow decision.
     """
     cfg = current_app.config
+    rule = RuleDetector().detect(text, normalization, external_content or [])
     judge = LLMJudge(
         "gemini",
         cfg.get("GEMINI_API_KEY", ""),
@@ -199,36 +203,71 @@ def _gemini_primary_detect(text, normalization, external_content=None):
         enabled=bool(cfg.get("LLM_JUDGE_ENABLED", True)),
         timeout_seconds=cfg.get("GEMINI_TIMEOUT_SECONDS", 30),
     )
-    result = judge.judge(text)
+    gemini_result = judge.judge(text, rule_result=rule)
+
     fallback = _local_safety_fallback(text)
+    result = gemini_result
     if fallback and (
-        not result.get("available")
-        or fallback.get("risk_score", 0) > (result.get("risk_score") or 0)
+        not gemini_result.get("available")
+        or fallback.get("risk_score", 0) > (gemini_result.get("risk_score") or 0)
     ):
-        # Keep the Gemini result for diagnosis while making the safer
-        # classification the effective decision input.
-        result = {**result, **fallback, "fallback_applied": True,
-                  "gemini_result": result}
-    score = int(result.get("risk_score") or 0) if result.get("available") else int(result.get("risk_score") or 0)
-    if result.get("is_harmful_request") or result.get("is_injection"):
-        score = max(score, int(result.get("risk_score") or 85))
-    available = bool(result.get("available"))
-    classes = []
+        result = {**gemini_result, **fallback, "fallback_applied": True,
+                  "gemini_result": gemini_result}
+
+    # Map local rule labels into stable attack classifications.
+    mapping = {
+        "Instruction Override": "INSTRUCTION_OVERRIDE",
+        "System Prompt Extraction": "SYSTEM_PROMPT_EXTRACTION",
+        "Role Hijacking": "ROLE_HIJACKING",
+        "Jailbreak": "JAILBREAK",
+        "Information Extraction": "DATA_EXFILTRATION",
+        "Secret Extraction": "DATA_EXFILTRATION",
+        "Policy Bypass": "CONTEXT_MANIPULATION",
+        "Context Manipulation": "CONTEXT_MANIPULATION",
+        "Delimiter Manipulation": "CONTEXT_MANIPULATION",
+        "Tool Abuse": "TOOL_ABUSE",
+        "Obfuscation": "OBFUSCATION",
+        "Encoded Payload": "OBFUSCATION",
+        "Indirect Injection": "INDIRECT_INJECTION",
+        "Multi-Step Manipulation": "MULTI_STEP_ATTACK",
+    }
+    classes = [mapping.get(category, category.upper().replace(" ", "_"))
+               for category in rule.get("categories", [])]
     attack_type = result.get("attack_type", "none")
-    if attack_type and attack_type.lower() != "none":
-        classes.append(attack_type)
+    if attack_type and str(attack_type).lower() != "none":
+        classes.append(str(attack_type).upper())
+    classes = list(dict.fromkeys(classes))
+
+    rule_score = int(rule.get("score") or 0) if rule.get("available") else 0
+    judge_score = int(result.get("risk_score") or 0)
+    score = max(rule_score, judge_score if result.get("available") or result.get("fallback_applied") else 0)
+    # A direct extraction / override rule is a strong signal even if the
+    # external Gemini API is rate-limited.
+    rule_detected = rule_score >= 40
+    detected = bool(rule_detected or result.get("is_injection")
+                    or result.get("is_harmful_request") or score >= 50)
+
+    available = bool(result.get("available"))
+    available_detectors = ["rule"] if rule.get("available") else []
+    if available:
+        available_detectors.append("gemini")
+    if result.get("fallback_applied"):
+        available_detectors.append("local_safety_fallback")
+
     return {
-        "rule": {"available": False, "score": None, "matched_rules": [], "categories": [], "evidence": []},
-        "ml": {"available": False, "status": "DISABLED", "prediction": "DISABLED", "probability": None},
+        "rule": rule,
+        "ml": {"available": False, "status": "DISABLED",
+               "prediction": "DISABLED", "probability": None},
         "llm_judge": result,
-        "rule_score": None, "ml_score": None,
-        "llm_judge_score": score if (available or result.get("fallback_applied")) else None,
-        "hybrid_score": score,
-        "available_detectors": ["gemini"] if available else (["local_safety_fallback"] if result.get("fallback_applied") else []),
-        "weights_used": {"gemini": 1.0} if available else ({"local_safety_fallback": 1.0} if result.get("fallback_applied") else {}),
+        "rule_score": rule_score if rule.get("available") else None,
+        "ml_score": None,
+        "llm_judge_score": judge_score if (available or result.get("fallback_applied")) else None,
+        "hybrid_score": min(100, score),
+        "available_detectors": available_detectors,
+        "weights_used": {"rule": 1.0} if not available else {"rule": 0.5, "gemini": 0.5},
         "classifications": classes,
         "latencies": {"judge_latency_ms": result.get("latency_ms", 0)},
-        "detected": bool(result.get("is_injection") or result.get("is_harmful_request") or score >= 50),
+        "detected": detected,
     }
 
 

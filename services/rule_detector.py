@@ -3,10 +3,10 @@ import re
 
 RULES = [
  ("INSTRUCTION_OVERRIDE","Instruction Override",r"\b(?:ignore|disregard|forget|override|bypass)\b.{0,80}\b(?:previous|prior|above|system|instructions?|rules?)",.85),
- ("SYSTEM_PROMPT_EXTRACTION","System Prompt Extraction",r"\b(?:reveal|show|print|give|extract|leak|repeat)\b.{0,80}\b(?:system prompt|system instructions?|developer prompt|hidden prompt)",.90),
+ ("SYSTEM_PROMPT_EXTRACTION","System Prompt Extraction",r"\b(?:reveal|show|print|give|extract|leak|repeat|disclose)\b.{0,80}\b(?:system prompt|system instructions?|developer prompt|hidden prompt|confidential instructions?)",.90),
  ("ROLE_HIJACKING","Role Hijacking",r"\b(?:you are now|act as|pretend to be|roleplay as|developer mode|dan\b|unrestricted)\b",.82),
  ("JAILBREAK","Jailbreak",r"\b(?:jailbreak|no restrictions|without restrictions|safety rules (?:do not|don't) apply|disable safety)\b",.88),
- ("INFORMATION_EXTRACTION","Information Extraction",r"\b(?:reveal|expose|extract|disclose|dump)\b.{0,80}\b(?:internal|hidden|private|confidential|instructions?|configuration)\b",.82),
+ ("INFORMATION_EXTRACTION","Information Extraction",r"\b(?:reveal|show|print|give|extract|disclose|dump|repeat)\b.{0,80}\b(?:internal|hidden|private|confidential|instructions?|configuration|information)\b",.86),
  ("SECRET_EXTRACTION","Secret Extraction",r"\b(?:api key|password|secret|credential|token|private key)\b.{0,50}\b(?:reveal|show|give|print|leak|dump)\b",.92),
  ("POLICY_BYPASS","Policy Bypass",r"\b(?:bypass|circumvent|evade|disable|ignore)\b.{0,60}\b(?:policy|safety|filter|guardrail|restriction)\b",.85),
  ("CONTEXT_MANIPULATION","Context Manipulation",r"\b(?:from now on|for the rest of|new context|change the rules|pretend that|assume that)\b",.72),
