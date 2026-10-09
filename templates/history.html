@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}History — PromptShield AI{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="app-shell">
+  <div class="app-header">
+    <div>
+      <h1>Test History</h1>
+      <p>Every SecurityTest recorded by the platform. Search, filter, sort, and click a row for the full breakdown.</p>
+    </div>
+  </div>
+
+  <div class="glass-card filters-bar">
+    <div class="control-field" style="min-width:260px;">
+      <label for="historySearch">Search Prompt</label>
+      <div class="search-box">
+        <i data-lucide="search"></i>
+        <input type="text" id="historySearch" placeholder="Search prompt text&hellip;">
+      </div>
+    </div>
+    <div class="control-field">
+      <label for="historyAttackType">Attack Type</label>
+      <select id="historyAttackType">
+        <option value="all">All</option>
+        <option value="direct_prompt_injection">Direct Prompt Injection</option>
+        <option value="indirect_prompt_injection">Indirect Prompt Injection</option>
+        <option value="instruction_override">Instruction Override</option>
+        <option value="role_manipulation">Role Manipulation</option>
+        <option value="context_manipulation">Context Manipulation</option>
+        <option value="information_extraction">Information Extraction</option>
+        <option value="obfuscation">Obfuscation</option>
+        <option value="multi_step_manipulation">Multi-Step Manipulation</option>
+        <option value="none">None</option>
+      </select>
+    </div>
+    <div class="control-field">
+      <label for="historyRiskLevel">Risk Level</label>
+      <select id="historyRiskLevel">
+        <option value="all">All</option>
+        <option value="safe">Safe</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="critical">Critical</option>
+      </select>
+    </div>
+    <div class="control-field">
+      <label for="historyDefenseMode">Defense Mode</label>
+      <select id="historyDefenseMode">
+        <option value="all">All</option>
+        <option value="disabled">Disabled</option>
+        <option value="basic">Basic</option>
+        <option value="standard">Standard</option>
+        <option value="maximum">Maximum</option>
+      </select>
+    </div>
+    <div class="lab-controls-actions">
+      <button class="btn btn-primary" id="historySearchBtn" type="button"><i data-lucide="search"></i> Search</button>
+    </div>
+  </div>
+
+  <div class="glass-card app-panel">
+    <div class="table-wrap">
+      <table class="interactive-table" id="historyTable">
+        <thead>
+          <tr>
+            <th data-sort="id">ID <span class="sort-arrow"></span></th>
+            <th data-sort="timestamp">Time <span class="sort-arrow"></span></th>
+            <th>Attack Type</th>
+            <th>Difficulty</th>
+            <th data-sort="risk_score">Risk <span class="sort-arrow"></span></th>
+            <th data-sort="confidence">Confidence <span class="sort-arrow"></span></th>
+            <th>Defense</th>
+            <th>Decision</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <tr><td colspan="8"><div class="empty-state">Loading history&hellip;</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-bar">
+      <div class="pagination-info" id="paginationInfo"></div>
+      <div class="pagination-controls" id="paginationControls"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %}

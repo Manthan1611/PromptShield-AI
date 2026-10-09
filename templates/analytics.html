@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Analytics — PromptShield AI{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="app-shell">
+  <div class="app-header">
+    <div>
+      <h1>Analytics</h1>
+      <p>Filter the full test history and see how risk, detection, and defense metrics respond.</p>
+    </div>
+  </div>
+
+  <div class="glass-card filters-bar">
+    <div class="control-field">
+      <label for="filterAttackType">Attack Type</label>
+      <select id="filterAttackType">
+        <option value="all">All</option>
+        <option value="direct_prompt_injection">Direct Prompt Injection</option>
+        <option value="indirect_prompt_injection">Indirect Prompt Injection</option>
+        <option value="instruction_override">Instruction Override</option>
+        <option value="role_manipulation">Role Manipulation</option>
+        <option value="context_manipulation">Context Manipulation</option>
+        <option value="information_extraction">Information Extraction</option>
+        <option value="obfuscation">Obfuscation</option>
+        <option value="multi_step_manipulation">Multi-Step Manipulation</option>
+        <option value="none">None</option>
+      </select>
+    </div>
+    <div class="control-field">
+      <label for="filterRiskLevel">Risk Level</label>
+      <select id="filterRiskLevel">
+        <option value="all">All</option>
+        <option value="safe">Safe</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="critical">Critical</option>
+      </select>
+    </div>
+    <div class="control-field">
+      <label for="filterDefenseMode">Defense Mode</label>
+      <select id="filterDefenseMode">
+        <option value="all">All</option>
+        <option value="disabled">Disabled</option>
+        <option value="basic">Basic</option>
+        <option value="standard">Standard</option>
+        <option value="maximum">Maximum</option>
+      </select>
+    </div>
+    <div class="control-field">
+      <label for="filterStartDate">Start Date</label>
+      <input type="date" id="filterStartDate">
+    </div>
+    <div class="control-field">
+      <label for="filterEndDate">End Date</label>
+      <input type="date" id="filterEndDate">
+    </div>
+    <div class="lab-controls-actions">
+      <button class="btn btn-ghost" id="clearFiltersBtn" type="button"><i data-lucide="x"></i> Clear</button>
+      <button class="btn btn-primary" id="applyFiltersBtn" type="button"><i data-lucide="filter"></i> Apply Filters</button>
+    </div>
+  </div>
+
+  <div class="metrics-row" id="metricsRow">
+    <div class="glass-card metric-card-sm"><div class="mc-value" id="metricAvgRisk">&mdash;</div><div class="mc-label">Average Risk</div></div>
+    <div class="glass-card metric-card-sm"><div class="mc-value" id="metricDetectionRate">&mdash;</div><div class="mc-label">Detection Rate</div></div>
+    <div class="glass-card metric-card-sm"><div class="mc-value" id="metricBlockRate">&mdash;</div><div class="mc-label">Block Rate</div></div>
+    <div class="glass-card metric-card-sm"><div class="mc-value" id="metricHighRiskRate">&mdash;</div><div class="mc-label">High Risk Rate</div></div>
+    <div class="glass-card metric-card-sm"><div class="mc-value" id="metricDefenseEffectiveness">&mdash;</div><div class="mc-label">Defense Effectiveness</div></div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="glass-card chart-card">
+      <div class="chart-card-header"><h3>Threats by Attack Type</h3><i data-lucide="bar-chart-3"></i></div>
+      <div class="chart-canvas-wrap"><canvas id="chartAttackType"></canvas></div>
+    </div>
+    <div class="glass-card chart-card">
+      <div class="chart-card-header"><h3>Risk Distribution</h3><i data-lucide="pie-chart"></i></div>
+      <div class="chart-canvas-wrap"><canvas id="chartRiskDist"></canvas></div>
+    </div>
+    <div class="glass-card chart-card span-full">
+      <div class="chart-card-header"><h3>Attacks Over Time</h3><i data-lucide="trending-up"></i></div>
+      <div class="chart-canvas-wrap"><canvas id="chartTimeline"></canvas></div>
+    </div>
+    <div class="glass-card chart-card">
+      <div class="chart-card-header"><h3>Defense Effectiveness by Mode</h3><i data-lucide="shield"></i></div>
+      <div class="chart-canvas-wrap"><canvas id="chartDefenseEffectiveness"></canvas></div>
+    </div>
+    <div class="glass-card chart-card">
+      <div class="chart-card-header"><h3>Detection Method Comparison</h3><i data-lucide="scan-search"></i></div>
+      <div class="chart-canvas-wrap"><canvas id="chartDetectionMethods"></canvas></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}

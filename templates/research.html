@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block title %}Research — PromptShield AI{% endblock %}
+{% block content %}<div class="app-shell"><div class="app-header"><div><h1>Research</h1><p>Prompt injection detection and defense concepts implemented by this project.</p></div></div>
+<div class="charts-grid">{% for title,body in [
+("Prompt Injection","Attempts to manipulate an LLM through instructions in user or external content."),
+("Direct Injection","Untrusted user input attempts to override or redirect trusted instructions."),
+("Indirect Injection","Instructions arrive through external documents, web content, email or retrieved text."),
+("Trust Boundary","Trusted system/developer configuration is separated from untrusted content."),
+("Defense in Depth","Multiple independent controls reduce reliance on a single detector."),
+("Least Privilege","Tools and permissions should be limited to what the task requires."),
+("Input Validation","Inputs are checked before they enter the model pipeline."),
+("Context Isolation","User and external content are represented separately from trusted context."),
+("Output Validation","Generated responses are checked for leaks and policy violations."),
+("Cryptographic Integrity","HMAC verifies protected system configuration before model execution."),
+("Canary Tokens","Dynamic markers detect simulated protected-context leakage."),
+("Audit Logging","Security events are recorded in a tamper-evident hash chain."),
+("ML Detection","TF-IDF classification is available as an offline detector when trained."),
+("LLM-as-Judge","An independent judge classifies injection risk without receiving secrets.") ] %}
+<div class="glass-card placeholder-card"><h3>{{title}}</h3><p>{{body}}</p></div>{% endfor %}</div>
+<div class="glass-card placeholder-card"><h2>PROJECT IMPLEMENTATION</h2><p>Normalization, trust boundaries, hybrid detection, cryptographic integrity, defense, output filtering, canary checks, audit logging, evaluation and forensic APIs.</p><h2>FUTURE WORK</h2><p>Transformer/embedding models, larger independently curated datasets, production distributed rate limiting and broader external-provider benchmarking.</p></div></div>{% endblock %}

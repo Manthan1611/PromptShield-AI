@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Admin — PromptShield AI{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+{% block content %}
+<div class="placeholder-shell">
+  <div class="glass-card placeholder-card">
+    <span class="status-dot status-dot--info"></span>
+    <h1>Admin</h1>
+    <p>User management and platform-level controls, built on the User model already defined in the database contract.</p>
+    <div class="placeholder-meta">
+      <span class="pill">Not Yet Implemented</span>
+    </div>
+  </div>
+</div>
+{% endblock %}

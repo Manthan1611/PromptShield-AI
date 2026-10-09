@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}PromptShield AI{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-glow" aria-hidden="true"></div>
+
+<header class="navbar">
+  <div class="navbar-inner">
+    <a href="{{ url_for('page.index') }}" class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <i data-lucide="shield-check"></i>
+      </span>
+      <span class="brand-name">PromptShield <span class="brand-accent">AI</span></span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="{{ url_for('page.dashboard') }}" class="nav-link {% if active_page == 'dashboard' %}active{% endif %}" {% if active_page == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
+      <a href="{{ url_for('page.lab') }}" class="nav-link {% if active_page == 'lab' %}active{% endif %}" {% if active_page == 'lab' %}aria-current="page"{% endif %}>Security Lab</a>
+      <a href="{{ url_for('page.simulator') }}" class="nav-link {% if active_page == 'simulator' %}active{% endif %}" {% if active_page == 'simulator' %}aria-current="page"{% endif %}>Simulator</a>
+      <a href="{{ url_for('page.evaluation') }}" class="nav-link {% if active_page == 'evaluation' %}active{% endif %}">Evaluation</a>
+      <a href="{{ url_for('page.analytics') }}" class="nav-link {% if active_page == 'analytics' %}active{% endif %}" {% if active_page == 'analytics' %}aria-current="page"{% endif %}>Analytics</a>
+      <a href="{{ url_for('page.reports') }}" class="nav-link {% if active_page == 'reports' %}active{% endif %}">Reports</a>
+      <a href="{{ url_for('page.research') }}" class="nav-link {% if active_page == 'research' %}active{% endif %}" {% if active_page == 'research' %}aria-current="page"{% endif %}>Research</a>
+      <a href="{{ url_for('page.history') }}" class="nav-link {% if active_page == 'history' %}active{% endif %}" {% if active_page == 'history' %}aria-current="page"{% endif %}>History</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="{{ url_for('page.settings') }}" class="icon-btn" title="Settings" aria-label="Settings">
+        <i data-lucide="settings"></i>
+      </a>
+      <a href="{{ url_for('page.admin') }}" class="icon-btn" title="Admin" aria-label="Admin">
+        <i data-lucide="shield-ellipsis"></i>
+      </a>
+      <button class="nav-menu-toggle" id="navMenuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinksMobile">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </div>
+  <nav class="nav-links-mobile" id="navLinksMobile" aria-label="Primary mobile">
+    <a href="{{ url_for('page.dashboard') }}" class="{% if active_page == 'dashboard' %}active{% endif %}">Dashboard</a>
+    <a href="{{ url_for('page.lab') }}" class="{% if active_page == 'lab' %}active{% endif %}">Security Lab</a>
+    <a href="{{ url_for('page.simulator') }}" class="{% if active_page == 'simulator' %}active{% endif %}">Simulator</a>
+    <a href="{{ url_for('page.analytics') }}" class="{% if active_page == 'analytics' %}active{% endif %}">Analytics</a>
+    <a href="{{ url_for('page.research') }}" class="{% if active_page == 'research' %}active{% endif %}">Research</a>
+    <a href="{{ url_for('page.history') }}" class="{% if active_page == 'history' %}active{% endif %}">History</a>
+    <a href="{{ url_for('page.settings') }}" class="{% if active_page == 'settings' %}active{% endif %}">Settings</a>
+    <a href="{{ url_for('page.admin') }}" class="{% if active_page == 'admin' %}active{% endif %}">Admin</a>
+  </nav>
+</header>
+
+<main class="page-shell" id="main-content">
+  {% if error_code %}
+  <section class="error-shell">
+    <div class="glass-card error-card">
+      <span class="status-dot status-dot--critical" aria-hidden="true"></span>
+      <h1>{{ error_code }}</h1>
+      <p>The route you requested isn't wired up yet.</p>
+      <a href="{{ url_for('page.index') }}" class="btn btn-primary">Return to base</a>
+    </div>
+  </section>
+  {% else %}
+  {% block content %}{% endblock %}
+  {% endif %}
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-brand">
+      <a href="{{ url_for('page.index') }}" class="brand">
+        <span class="brand-mark" aria-hidden="true"><i data-lucide="shield-check"></i></span>
+        <span class="brand-name">PromptShield <span class="brand-accent">AI</span></span>
+      </a>
+      <p class="footer-desc">Interactive LLM prompt injection security testing &amp; defense platform. Sandboxed, offline by default, no API key required.</p>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="{{ url_for('page.dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('page.lab') }}">Security Lab</a>
+      <a href="{{ url_for('page.simulator') }}">Simulator</a>
+      <a href="{{ url_for('page.analytics') }}">Analytics</a>
+      <a href="{{ url_for('page.research') }}">Research</a>
+      <a href="{{ url_for('page.history') }}">History</a>
+    </nav>
+  </div>
+  <div class="site-footer-bottom">
+    <span>&copy; 2026 PromptShield AI</span>
+    <span class="footer-meta">Sandboxed. No live model access required.</span>
+  </div>
+</footer>
+
+<!-- Shared detail modal (populated by main.js / page scripts) -->
+<div class="modal-overlay" id="detailModal" aria-hidden="true">
+  <div class="glass-card modal-box" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+    <button class="modal-close" id="detailModalClose" aria-label="Close">
+      <i data-lucide="x"></i>
+    </button>
+    <div id="detailModalContent"></div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dropdown.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

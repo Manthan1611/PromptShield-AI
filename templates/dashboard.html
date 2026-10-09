@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — PromptShield AI{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<div class="app-shell">
+  <div class="app-header">
+    <div>
+      <h1>Security Operations Center</h1>
+      <p>Live metrics computed from the SQLite database — nothing on this page is hard-coded.</p>
+    </div>
+  </div>
+
+  <div class="soc-stats-grid" id="socStats">
+    <div class="glass-card soc-stat-card">
+      <div class="ssc-icon"><i data-lucide="database"></i></div>
+      <div class="ssc-value" id="statTotalTests">&mdash;</div>
+      <div class="ssc-label">Total Tests</div>
+    </div>
+    <div class="glass-card soc-stat-card accent-red">
+      <div class="ssc-icon"><i data-lucide="alert-triangle"></i></div>
+      <div class="ssc-value" id="statThreatsDetected">&mdash;</div>
+      <div class="ssc-label">Threats Detected</div>
+    </div>
+    <div class="glass-card soc-stat-card accent-green">
+      <div class="ssc-icon"><i data-lucide="shield-check"></i></div>
+      <div class="ssc-value" id="statThreatsBlocked">&mdash;</div>
+      <div class="ssc-label">Threats Blocked</div>
+    </div>
+    <div class="glass-card soc-stat-card accent-violet">
+      <div class="ssc-icon"><i data-lucide="flame"></i></div>
+      <div class="ssc-value" id="statHighRisk">&mdash;</div>
+      <div class="ssc-label">High-Risk Events</div>
+    </div>
+    <div class="glass-card soc-stat-card">
+      <div class="ssc-icon"><i data-lucide="gauge"></i></div>
+      <div class="ssc-value" id="statAvgRisk">&mdash;</div>
+      <div class="ssc-label">Average Risk</div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="glass-card chart-card">
+      <div class="chart-card-header"><h3>Threats by Attack Type</h3><i data-lucide="bar-chart-3"></i></div>
+      <div class="chart-canvas-wrap"><canvas id="chartAttackType"></canvas></div>
+    </div>
+    <div class="glass-card chart-card">
+      <div class="chart-card-header"><h3>Risk Distribution</h3><i data-lucide="pie-chart"></i></div>
+      <div class="chart-canvas-wrap"><canvas id="chartRiskDist"></canvas></div>
+    </div>
+    <div class="glass-card chart-card span-full">
+      <div class="chart-card-header"><h3>Attacks Over Time</h3><i data-lucide="trending-up"></i></div>
+      <div class="chart-canvas-wrap"><canvas id="chartTimeline"></canvas></div>
+    </div>
+    <div class="glass-card chart-card">
+      <div class="chart-card-header"><h3>Defense Effectiveness</h3><i data-lucide="shield"></i></div>
+      <div class="chart-canvas-wrap"><canvas id="chartDefenseEffectiveness"></canvas></div>
+    </div>
+    <div class="glass-card chart-card">
+      <div class="chart-card-header"><h3>Detection Method Comparison</h3><i data-lucide="scan-search"></i></div>
+      <div class="chart-canvas-wrap"><canvas id="chartDetectionMethods"></canvas></div>
+    </div>
+  </div>
+
+  <div class="metrics-row"><div class="glass-card metric-card-sm"><div class="mc-value" id="securityPostureValue">NO DATA</div><div class="mc-label">SECURITY POSTURE</div></div><div class="glass-card metric-card-sm"><div class="mc-value" id="auditIntegrityValue">NO DATA</div><div class="mc-label">AUDIT INTEGRITY</div></div></div>
+
+  <div class="glass-card app-panel">
+    <div class="chart-card-header"><h3>Recent Security Events</h3><i data-lucide="list"></i></div>
+    <div class="table-wrap">
+      <table class="interactive-table" id="recentEventsTable">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Attack Type</th>
+            <th>Severity</th>
+            <th>Risk</th>
+            <th>Detection</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="recentEventsBody">
+          <tr><td colspan="6"><div class="empty-state">Loading recent events&hellip;</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

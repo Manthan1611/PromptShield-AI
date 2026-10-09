@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}Evaluation Lab — PromptShield AI{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for("static", filename="css/dashboard.css") }}">{% endblock %}
+{% block content %}<div class="app-shell"><div class="app-header"><div><h1>Evaluation Lab</h1><p>Run the real local dataset through each detector and compare measured performance.</p></div></div>
+<div class="glass-card filters-bar"><div class="control-field"><label>Evaluation Size</label><select id="evalSize"><option>10</option><option>25</option><option>50</option><option>100</option></select></div><button class="btn btn-primary" id="runEval">RUN EVALUATION</button><span id="evalStatus" class="pill">NO DATA</span></div>
+<div class="metrics-row" id="evalSummary"></div><div class="glass-card app-panel"><div class="table-wrap"><table class="interactive-table"><thead><tr><th>Detector</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>FPR</th><th>FNR</th><th>Latency</th><th>Samples</th></tr></thead><tbody id="evalTable"><tr><td colspan="9">INSUFFICIENT DATA</td></tr></tbody></table></div></div>
+<div class="glass-card app-panel"><h2>Confusion Matrices</h2><div id="confusionMatrices" class="charts-grid"></div></div></div>{% endblock %}
+{% block extra_js %}<script src="{{ url_for("static", filename="js/evaluation.js") }}"></script>{% endblock %}

@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}Security Lab — PromptShield AI{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/lab.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="lab-shell">
+
+  <div class="lab-header">
+    <div>
+      <h1>Security Lab</h1>
+      <p>Submit a prompt and watch it move through the full detection &amp; defense pipeline. Gemini is optional and server-side.</p>
+    </div>
+  </div>
+
+  <div class="glass-card lab-controls">
+    <div class="control-field">
+      <label for="attackTypeSelect">Attack Type</label>
+      <select id="attackTypeSelect">
+        <option value="auto">Auto / Freeform</option>
+        <option value="direct_prompt_injection">Direct Prompt Injection</option>
+        <option value="instruction_override">Instruction Override</option>
+        <option value="role_manipulation">Role Manipulation</option>
+        <option value="information_extraction">Information Extraction</option>
+        <option value="context_manipulation">Context Manipulation</option>
+        <option value="obfuscation">Obfuscation</option>
+        <option value="multi_step_manipulation">Multi-Step Manipulation</option>
+        <option value="none">None (benign sample)</option>
+      </select>
+    </div>
+    <div class="control-field">
+      <label for="difficultySelect">Difficulty</label>
+      <select id="difficultySelect">
+        <option value="auto">Auto</option>
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+    <div class="control-field">
+      <label for="defenseModeSelect">Defense Mode</label>
+      <select id="defenseModeSelect">
+        <option value="disabled">Disabled</option>
+        <option value="basic">Basic</option>
+        <option value="standard" selected>Standard</option>
+        <option value="maximum">Maximum</option>
+      </select>
+    </div>
+    <div class="control-field">
+      <label for="inputTypeSelect">Input Type</label>
+      <select id="inputTypeSelect">
+        <option value="direct" selected>Direct User Input</option>
+        <option value="indirect">Indirect External Content</option>
+        <option value="rag">RAG Simulation</option>
+      </select>
+    </div>
+    <div class="control-field">
+      <label for="llmModeSelect">Target LLM Mode</label>
+      <select id="llmModeSelect">
+        <option value="mock" selected>Mock (offline)</option>
+        <option value="openai">OpenAI-compatible</option>
+      </select>
+    </div>
+    <div class="control-field">
+      <label for="modelProfileSelect">Model Profile</label>
+      <select id="modelProfileSelect">
+        <option value="SECURE">Secure</option>
+        <option value="STANDARD" selected>Standard</option>
+        <option value="VULNERABLE">Vulnerable (SIMULATION)</option>
+        <option value="CUSTOM">Custom</option>
+      </select>
+    </div>
+    <div class="lab-controls-actions">
+      <button class="btn btn-ghost" id="compareBtn" type="button">
+        <i data-lucide="git-compare"></i> Compare Defense OFF / ON
+      </button>
+      <button class="btn btn-primary run-btn" id="runAnalysisBtn" type="button">
+        <i data-lucide="play"></i> RUN SECURITY ANALYSIS
+      </button>
+    </div>
+  </div>
+
+  <div class="lab-grid">
+
+    <!-- LEFT: Prompt editor -->
+    <div class="glass-card lab-col prompt-editor">
+      <div class="lab-col-title"><i data-lucide="edit-3"></i> Prompt Editor</div>
+      <div class="scenario-select-wrap">
+        <select id="scenarioSelect" aria-label="Load a known attack scenario">
+          <option value="">Load a known scenario\u2026</option>
+        </select>
+      </div>
+      <textarea id="labPrompt" placeholder="Type or paste a prompt to test\u2026" maxlength="8000"></textarea>
+      <div class="prompt-meta" id="promptMeta">0 / 8,000 characters</div>
+    </div>
+
+    <!-- CENTER: Pipeline + Result panel -->
+    <div class="glass-card lab-col">
+      <div class="lab-col-title"><i data-lucide="workflow"></i> Security Pipeline</div>
+      <div class="lab-pipeline" id="labPipelineTrack"></div>
+
+      <div class="lab-col-title"><i data-lucide="gauge"></i> Result</div>
+      <div id="resultArea">
+        <div class="empty-state">
+          <i data-lucide="shield"></i>
+          <div>Run an analysis to see the risk gauge, threat level, and final decision here.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Threat intelligence + response analyzer -->
+    <div class="glass-card lab-col" id="threatArea">
+      <div class="lab-col-title"><i data-lucide="scan-search"></i> Detector Results</div>
+      <div class="empty-state">
+        <i data-lucide="radar"></i>
+        <div>Detector breakdown, recommendations, and the model's response will appear here.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="glass-card" id="geminiJudgeCard" style="margin-top:18px;">
+    <div class="lab-col-title"><i data-lucide="sparkles"></i> GEMINI LLM JUDGE</div>
+    <div class="reco-list"><div class="reco-item">Loading Gemini status…</div></div>
+  </div>
+
+  <!-- BEFORE / AFTER comparison -->
+  <div class="compare-section" id="compareSection" style="display:none;">
+    <div class="lab-col-title" style="margin-top:8px;"><i data-lucide="git-compare"></i> Defense OFF vs Defense ON</div>
+    <div class="compare-grid" id="compareGrid"></div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/lab.js') }}"></script>
+{% endblock %}
