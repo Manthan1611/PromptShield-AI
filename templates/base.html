@@ -102,6 +102,16 @@
 </footer>
 
 <!-- Shared detail modal (populated by main.js / page scripts) -->
+  {% if active_page != 'home' %}
+<!-- Floating AI Security Chatbot launcher (opens external chatbot in a new tab) -->
+<a href="https://prompt-guard-chatbot.netlify.app/" class="chatbot-fab" id="chatbotFab"
+   target="_blank" rel="noopener noreferrer"
+   aria-label="AI Security Chatbot (opens in a new tab)" title="Open AI Security Chatbot">
+  <span class="chatbot-fab-icon" aria-hidden="true"><i data-lucide="bot"></i></span>
+  <span class="chatbot-fab-label">AI Security Chatbot</span>
+  <i data-lucide="external-link" class="chatbot-fab-ext" aria-hidden="true"></i>
+</a>
+{% endif %}
 <div class="modal-overlay" id="detailModal" aria-hidden="true">
   <div class="glass-card modal-box" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
     <button class="modal-close" id="detailModalClose" aria-label="Close">
