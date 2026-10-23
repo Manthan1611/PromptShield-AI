@@ -10,6 +10,7 @@
      cards (.glass-card / .glass-panel)      : 2
      control/filter bars                     : 20
      sticky navbar                           : 100
+     floating chatbot launcher (.chatbot-fab): 50
      dropdown wrapper (.ps-select)           : 100
      dropdown menu (.ps-select-listbox)      : 1000
      modal (.modal-overlay)                  : 2000
