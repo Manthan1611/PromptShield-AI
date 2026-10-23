@@ -649,3 +649,81 @@ select, option {
 @media (prefers-reduced-motion: reduce) {
   .ps-select-listbox, .ps-select-chevron { transition: none; }
 }
+
+/* --- Floating AI Security Chatbot launcher --- */
+.chatbot-fab {
+  position: fixed;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: max(24px, env(safe-area-inset-bottom));
+  z-index: 50; /* above cards/control bars, below navbar, dropdowns and modal */
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px 8px 8px;
+  min-height: 48px;
+  border-radius: 999px;
+  background: rgba(8, 11, 20, 0.82);
+  border: 1px solid var(--c-cyan-dim);
+  color: var(--c-text);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-glow-cyan), 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), border-color 0.25s ease, background 0.25s ease;
+}
+.chatbot-fab:hover {
+  transform: translateY(-3px);
+  border-color: var(--c-cyan);
+  background: rgba(43, 227, 240, 0.08);
+  box-shadow: 0 0 55px -6px rgba(43, 227, 240, 0.55), 0 14px 34px -12px rgba(0, 0, 0, 0.7);
+}
+.chatbot-fab:active { transform: translateY(-1px); }
+.chatbot-fab:focus-visible { outline: 2px solid var(--c-cyan); outline-offset: 3px; }
+
+.chatbot-fab-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--gradient-brand);
+  color: #04060a;
+}
+.chatbot-fab-icon i { width: 18px; height: 18px; }
+.chatbot-fab-ext { width: 14px; height: 14px; color: var(--c-text-faint); transition: color 0.2s ease; }
+.chatbot-fab:hover .chatbot-fab-ext { color: var(--c-cyan); }
+
+/* Keep the footer's last line clear of the floating button */
+body:has(.chatbot-fab) .site-footer { padding-bottom: 76px; }
+
+/* Mobile: compact pill, label kept but trimmed; icon-only on very small screens */
+@media (max-width: 640px) {
+  .chatbot-fab {
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    font-size: 13px;
+    padding: 6px 14px 6px 6px;
+    gap: 8px;
+  }
+  .chatbot-fab-icon { width: 32px; height: 32px; }
+  .chatbot-fab-ext { display: none; }
+}
+@media (max-width: 380px) {
+  .chatbot-fab { padding: 6px; }
+  .chatbot-fab-label {
+    /* visually hidden, still announced via aria-label */
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chatbot-fab, .chatbot-fab:hover, .chatbot-fab:active { transition: none; transform: none; }
+}
